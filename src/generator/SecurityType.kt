@@ -8,6 +8,6 @@ enum class SecurityType(val desc: String) {
     ABS("Asset-Backed Securities"),
     NegotiableCD("Negotiable Certificates of Deposit"),
     CommercialPaper("Commercial Paper"),
-    Supranatioanls("Supranational Bonds"),
+    Supranationals("Supranational Bonds"),
     Municipal("Municipal Bonds"),
 }
