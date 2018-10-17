@@ -2,42 +2,11 @@ package generator
 
 import java.time.LocalDate
 
-typealias Bonds = List<TradedBond>
-
-class PortfolioStatistics(val bonds: Bonds) {
-	val par: Double = bonds.sumByDouble { it.par }
-	val originalCost: Double = bonds.sumByDouble { it.originalCost }
-	val marketValue: Double = bonds.sumByDouble { it.marketValue }
-	val bondsBySector: Map<SecurityType, Bonds> = mapBondsByProperty { it.securityType }
-	val bondsByMaturityRange: Map<MaturityRange, Bonds> = mapBondsByProperty { it.maturityRange }
-	val bondsBySpRating: Map<SpRating, Bonds> = mapBondsByProperty { it.spRating }
-
-	private fun <T> mapBondsByProperty(
-		 getBondPropertyValue: (bond: TradedBond) -> T
-	): Map<T, Bonds> {
-		val map = HashMap<T, MutableList<TradedBond>>()
-		bonds.map {
-			val ret = getBondPropertyValue(it)
-			if (map[ret] == null) map[ret] = ArrayList()
-			map[ret]!!.add(it)
-		}
-		return map
-	}
-
-	override fun toString(): String {
-		return "PortfolioStatistics( par=par, originalCost=$originalCost, marketValue=$marketValue, bondsBySector=$bondsBySector)"
-	}
-}
 
 fun main(args: Array<String>) {
-	val bonds = createBonds()
-	for (bond in bonds) println(bond)
-	val pStats = PortfolioStatistics(bonds)
-	println(pStats)
-
 }
 
-fun createBonds(): List<TradedBond> {
+fun createTestBonds(): List<TradedBond> {
 	return listOf(
 		 TradedBond(
 				securityType = SecurityType.Treasury,
@@ -113,4 +82,5 @@ fun createBonds(): List<TradedBond> {
 		 )
 	)
 }
+
 
