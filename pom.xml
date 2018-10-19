@@ -10,13 +10,18 @@
 
     <dependencies>
 
-        <!-- https://mvnrepository.com/artifact/com.github.ajalt/clikt -->
         <dependency>
-            <groupId>com.github.ajalt</groupId>
-            <artifactId>clikt</artifactId>
-            <version>1.5.0</version>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.72</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.jakewharton.fliptables/fliptables -->
+        <dependency>
+            <groupId>de.vandermeer</groupId>
+            <artifactId>asciitable</artifactId>
+            <version>0.3.2</version>
+        </dependency>
     </dependencies>
 
 </project>

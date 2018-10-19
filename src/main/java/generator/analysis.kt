@@ -32,7 +32,6 @@ class PortfolioStatistics(val bonds: Bonds) {
 		bonds.map {
 			map.merge(getBondProperty(it), it.marketValue / marketValue, ::sum)
 		}
-
 		return map
 	}
 

@@ -2,10 +2,6 @@ package generator
 
 import java.time.LocalDate
 
-
-fun main(args: Array<String>) {
-}
-
 fun createTestBonds(): List<TradedBond> {
 	return listOf(
 		 TradedBond(
