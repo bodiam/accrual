@@ -1,5 +1,7 @@
 package generator
 
+import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
+import generator.cli.TablePrinter
 import java.lang.Double.sum
 
 typealias Bonds = List<TradedBond>
@@ -13,6 +15,7 @@ class PortfolioStatistics(val bonds: Bonds) {
 
 	//averages
 	val maturity: Double = bonds.sumByDouble { it.marketValue * it.daysToMaturity } / (marketValue * 365)
+	val yieldAtCost: Double = bonds.sumByDouble { it.yieldAtCost * it.originalCost } / originalCost
 
 
 	// list of bonds by property
@@ -45,8 +48,56 @@ class PortfolioStatistics(val bonds: Bonds) {
 		return map
 	}
 
+	fun printStats() {
+		val tablePrinter = TablePrinter()
+		tablePrinter.addTitle("Portfolio Statistics <br/> As of __date__", 2)
+//		table.addHeaders("Portfolio Statistics",
+//			 arrayOf(
+//					"Par",
+
+//					"Market Value",
+//					"AmortizedCost",
+//					"Original Cost",
+//					"Yield at Cost",
+//					"Average Maturity",
+//					"Accrued Interest"
+//			 ))
+		tablePrinter.addKeyValue("Par", par.withCommas())
+		tablePrinter.addKeyValue("Market Value", marketValue.withCommas())
+		tablePrinter.addKeyValue("Amortized Cost", amortizerdCost.withCommas())
+		tablePrinter.addKeyValue("Original Cost", originalCost.withCommas())
+		tablePrinter.addKeyValue("Accrued Interest", accruedInterest.withCommas())
+		tablePrinter.addKeyValue("Yield At Cost", yieldAtCost.toPercent())
+		tablePrinter.addKeyValue("Average Maturity", "${maturity.withCommas()} Years")
+
+
+		tablePrinter.table.setTextAlignment(TextAlignment.CENTER)
+		tablePrinter.render()
+	}
+
+
 	override fun toString(): String {
 		return "PortfolioStatistics( par=par, originalCost=$originalCost, marketValue=$marketValue, bondsBySecurityType=$bondsBySecurityType)"
 	}
+}
+
+fun main(args: Array<String>) {
+	val pStats = PortfolioStatistics(createTestBonds())
+	pStats.bondsBySecurityType.printTable()
+	pStats.bondsByMaturityRange.printTable()
+	pStats.bondsBySpRating.printTable()
+
+	pStats.printStats()
+	println(pStats.yieldAtCost)
+}
+
+private fun <T> Map<T, Bonds>.printTable() {
+	val tablePrinter = TablePrinter()
+	this.forEach { (key, bonds) ->
+		run {
+			tablePrinter.addBondsInDetail("$key", bonds)
+		}
+	}
+	tablePrinter.render()
 }
 

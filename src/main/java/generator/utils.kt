@@ -8,9 +8,8 @@ internal fun Double.withCommas(): String {
 }
 
 internal fun Double.toPercent(): String {
-	return String.format("%." + 2 + "f", this * 100) + "%";
+	return String.format("%." + 2 + "f", this * 100) + "%"
 }
-
 
 internal fun round(value: Double, places: Int): Double {
 	if (places < 0) throw IllegalArgumentException()

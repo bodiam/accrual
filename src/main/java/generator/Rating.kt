@@ -42,6 +42,10 @@ enum class SpRating(
 	NotRated()
 	;
 
+	override fun toString(): String {
+		return rating
+	}
+
 	//for NotRated type
 	constructor()
 

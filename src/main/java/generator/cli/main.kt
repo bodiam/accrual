@@ -15,15 +15,6 @@ class Args {
 	@Parameter(names = arrayOf("--help", "-h"), help = true)
 	var help = false
 
-//	@Parameter(names = arrayOf("-log", "-verbose"), description = "Level of verbosity")
-//	var verbose = 1
-//
-//	@Parameter(names = arrayOf("-groups"), description = "Comma-separated list of group names to be run")
-//	var groups: String? = null
-//
-//	@Parameter(names = arrayOf("-debug"), description = "Debug mode")
-//	private var debug = false
-
 	fun run() {
 		println("params: $parameters\n$dataFile")
 	}

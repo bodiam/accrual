@@ -9,39 +9,53 @@ import generator.toPercent
 import generator.withCommas
 
 class TablePrinter {
-	val at = AsciiTable()
+	val table = AsciiTable()
+
+	init {
+		table.addRule()
+	}
 
 	fun addHeaders(title: String, headers: Array<String>) {
 		/* setup title */
-		if (title.isNotEmpty()) {
-			at.addRule()
-			val nulls = arrayOfNulls<String>(headers.size)
-			nulls[nulls.size - 1] = title
-			at.addRow(*nulls).setTextAlignment(TextAlignment.CENTER)
-			at.addRule()
-		}
+		addTitle(title, headers.size)
 
-		at.addRow(*headers)
+		// add value columns
+		table.addRow(*headers)
 			 .setTextAlignment(TextAlignment.CENTER)
-		at.addRule()
+		table.addRule()
 	}
 
-	fun formatTable(at: AsciiTable) {
+	fun addTitle(title: String, numOfColumns: Int) {
+		/* setup title */
+		val nulls = arrayOfNulls<String>(numOfColumns)
+		nulls[nulls.size - 1] = title
+		table.addRow(*nulls)
+			 .setTextAlignment(TextAlignment.CENTER)
+		table.addRule()
+	}
+
+
+	private fun formatTable(at: AsciiTable) {
 		at.setPaddingLeft(1)
 		at.setPaddingRight(1)
 		at.renderer.cwc = CWC_LongestWordMin(8)
 	}
 
 	fun render() {
-		formatTable(at)
-		println(at.render())
+		formatTable(table)
+		println(table.render())
 	}
 
-	fun addBonds_Detailed(title: String, bonds: Bonds) {
-		addHeaders(title, arrayOf("CUSIP", "Par", "Coupon", "Settle\nDate", "Maturity\nDate",
-			 "Original\nCost", "YTM At Cost", "Amortized\nCost", "Market\nValue", "S&P Rating", "Moody's Rating"))
+	fun addKeyValue(key: String, value: Any) {
+		table.addRow(key, value)
+		table.addRule()
+	}
+
+	fun addBondsInDetail(title: String, bonds: Bonds) {
+		addHeaders(title, arrayOf("CUSIP", "Par", "Coupon", "Settle\nDate", "Maturity Date", "Original Cost", "YTM At Cost", "Amortized Cost", "Market Value", "S&P Rating", "Moody's Rating"))
+
 		for (b in bonds) {
-			at.addRow(
+			table.addRow(
 //				 b.description,
 				 b.cusip,
 				 b.par.withCommas(),
@@ -55,7 +69,7 @@ class TablePrinter {
 				 b.spRating.rating,
 				 b.moodysRating.rating
 			)
-			at.addRule()
+			table.addRule()
 		}
 	}
 }
@@ -63,7 +77,7 @@ class TablePrinter {
 fun main(args: Array<String>) {
 	val bonds = createTestBonds()
 	val tp = TablePrinter()
-	tp.addBonds_Detailed("Portfolio Bonds", bonds)
+	tp.addBondsInDetail("Portfolio Bonds", bonds)
 
 
 	tp.render()
