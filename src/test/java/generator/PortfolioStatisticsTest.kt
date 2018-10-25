@@ -1,5 +1,6 @@
 package generator
 
+import generatoar.SecurityType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -46,10 +47,10 @@ internal class PortfolioStatisticsTest {
 				 .filter { it.securityType == type }
 				 .sumByDouble { it.marketValue / pStats.marketValue }
 
-			assertEquals(expected, pStats.allocationBySecurityType[type])
+			assertEquals(expected, pStats.percentagesBySecurityType[type])
 		}
 
-		val total = pStats.allocationBySecurityType.values.sumByDouble { it }
+		val total = pStats.percentagesBySecurityType.values.sumByDouble { it }
 		assertEquals(1.0, round(total, 2))
 	}
 
@@ -61,22 +62,22 @@ internal class PortfolioStatisticsTest {
 			val expected = testBonds.asSequence()
 				 .filter { it.maturityRange == range }
 				 .sumByDouble { it.marketValue / pStats.marketValue }
-			assertEquals(expected, pStats.allocationByMaturityRange[range])
+			assertEquals(expected, pStats.percentagesByMaturityRange[range])
 		}
-		val total = pStats.allocationByMaturityRange.values.sumByDouble { it }
+		val total = pStats.percentagesByMaturityRange.values.sumByDouble { it }
 		assertEquals(1.0, round(total, 2))
 	}
 
 	@Test
-	fun getAllocationsBySpRating() {
+	fun getpercentagesBySpRating() {
 		val spRatings: MutableSet<SpRating> = HashSet(testBonds.map { it.spRating })
 		spRatings.map { rating ->
 			val expected = testBonds.asSequence()
 				 .filter { it.spRating == rating }
 				 .sumByDouble { it.marketValue / pStats.marketValue }
-			assertEquals(expected, pStats.allocationsBySpRating[rating])
+			assertEquals(expected, pStats.percentagesBySpRating[rating])
 		}
-		val total = pStats.allocationsBySpRating.values.sumByDouble { it }
+		val total = pStats.percentagesBySpRating.values.sumByDouble { it }
 		assertEquals(1.0, round(total, 2))
 	}
 

@@ -10,7 +10,6 @@ enum class MaturityRange(private val maturity: Int, val desc: String) {
 	OverFiveYears(Int.MAX_VALUE, "Over 5 Years")
 	;
 
-
 	companion object {
 		fun getRange(maturity: Int): MaturityRange {
 			var found = SixMonths

@@ -1,5 +1,6 @@
 package generator.cli
 
+import de.vandermeer.asciitable.AT_Row
 import de.vandermeer.asciitable.AsciiTable
 import de.vandermeer.asciitable.CWC_LongestWordMin
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
@@ -8,7 +9,7 @@ import generator.createTestBonds
 import generator.toPercent
 import generator.withCommas
 
-class TablePrinter {
+class TextTable {
 	val table = AsciiTable()
 
 	init {
@@ -35,20 +36,28 @@ class TablePrinter {
 	}
 
 
-	private fun formatTable(at: AsciiTable) {
-		at.setPaddingLeft(1)
-		at.setPaddingRight(1)
-		at.renderer.cwc = CWC_LongestWordMin(8)
+	private fun AsciiTable.formatTable() {
+		setPaddingLeft(1)
+		setPaddingRight(1)
+	}
+
+	fun setSmallColumnWidth() {
+		table.renderer.cwc = CWC_LongestWordMin(12)
+	}
+
+	fun setMediumColumnWidth() {
+		table.renderer.cwc = CWC_LongestWordMin(18)
 	}
 
 	fun render() {
-		formatTable(table)
+		table.formatTable()
 		println(table.render())
 	}
 
-	fun addKeyValue(key: String, value: Any) {
-		table.addRow(key, value)
+	fun addKeyValue(key: String, value: Any): AT_Row {
+		val row = table.addRow(key, value)
 		table.addRule()
+		return row
 	}
 
 	fun addBondsInDetail(title: String, bonds: Bonds) {
@@ -76,7 +85,7 @@ class TablePrinter {
 
 fun main(args: Array<String>) {
 	val bonds = createTestBonds()
-	val tp = TablePrinter()
+	val tp = TextTable()
 	tp.addBondsInDetail("Portfolio Bonds", bonds)
 
 

@@ -1,5 +1,6 @@
 package generator
 
+import generatoar.SecurityType
 import java.time.LocalDate
 
 fun createTestBonds(): List<TradedBond> {

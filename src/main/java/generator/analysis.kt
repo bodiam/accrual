@@ -1,8 +1,10 @@
 package generator
 
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
-import generator.cli.TablePrinter
+import generatoar.SecurityType
+import generator.cli.TextTable
 import java.lang.Double.sum
+import java.util.*
 
 typealias Bonds = List<TradedBond>
 
@@ -23,15 +25,15 @@ class PortfolioStatistics(val bonds: Bonds) {
 	val bondsByMaturityRange: Map<MaturityRange, Bonds> = mapBondsByProperty { it.maturityRange }
 	val bondsBySpRating: Map<SpRating, Bonds> = mapBondsByProperty { it.spRating }
 
-	//allocations by property
-	val allocationBySecurityType: Map<SecurityType, Double> = getAllocationByProperty { it.securityType }
-	val allocationByMaturityRange: Map<MaturityRange, Double> = getAllocationByProperty { it.maturityRange }
-	val allocationsBySpRating: Map<SpRating, Double> = getAllocationByProperty { it.spRating }
+	//percentages by property
+	val percentagesBySecurityType: Map<SecurityType, Double> = getAllocationByProperty { it.securityType }
+	val percentagesByMaturityRange: Map<MaturityRange, Double> = getAllocationByProperty { it.maturityRange }
+	val percentagesBySpRating: Map<SpRating, Double> = getAllocationByProperty { it.spRating }
 
 	private fun <T> getAllocationByProperty(
 		 getBondProperty: (bond: TradedBond) -> T
 	): Map<T, Double> {
-		val map = HashMap<T, Double>()
+		val map = TreeMap<T, Double>()
 		bonds.map {
 			map.merge(getBondProperty(it), it.marketValue / marketValue, ::sum)
 		}
@@ -49,30 +51,27 @@ class PortfolioStatistics(val bonds: Bonds) {
 	}
 
 	fun printStats() {
-		val tablePrinter = TablePrinter()
-		tablePrinter.addTitle("Portfolio Statistics <br/> As of __date__", 2)
-//		table.addHeaders("Portfolio Statistics",
-//			 arrayOf(
-//					"Par",
+		val textTable = TextTable()
+		textTable.addTitle("Portfolio Statistics <br/> As of __date__", 2)
 
-//					"Market Value",
-//					"AmortizedCost",
-//					"Original Cost",
-//					"Yield at Cost",
-//					"Average Maturity",
-//					"Accrued Interest"
-//			 ))
-		tablePrinter.addKeyValue("Par", par.withCommas())
-		tablePrinter.addKeyValue("Market Value", marketValue.withCommas())
-		tablePrinter.addKeyValue("Amortized Cost", amortizerdCost.withCommas())
-		tablePrinter.addKeyValue("Original Cost", originalCost.withCommas())
-		tablePrinter.addKeyValue("Accrued Interest", accruedInterest.withCommas())
-		tablePrinter.addKeyValue("Yield At Cost", yieldAtCost.toPercent())
-		tablePrinter.addKeyValue("Average Maturity", "${maturity.withCommas()} Years")
+		textTable.addKeyValue("Par", par.withCommas())
+		textTable.addKeyValue("Market Value", marketValue.withCommas())
+		textTable.addKeyValue("Amortized Cost", amortizerdCost.withCommas())
+		textTable.addKeyValue("Original Cost", originalCost.withCommas())
+		textTable.addKeyValue("Accrued Interest", accruedInterest.withCommas())
+		textTable.addKeyValue("Yield At Cost", yieldAtCost.toPercent())
+		textTable.addKeyValue("Average Maturity", "${maturity.withCommas()} Years")
+
+		textTable.table.setTextAlignment(TextAlignment.CENTER)
+		textTable.render()
+	}
+
+	//start with maturity dist
+	fun printDistribution() {
+		val textTable = TextTable()
+		textTable.addTitle("Portfolio Statistics <br/> As of __date__", 2)
 
 
-		tablePrinter.table.setTextAlignment(TextAlignment.CENTER)
-		tablePrinter.render()
 	}
 
 
@@ -83,21 +82,41 @@ class PortfolioStatistics(val bonds: Bonds) {
 
 fun main(args: Array<String>) {
 	val pStats = PortfolioStatistics(createTestBonds())
-	pStats.bondsBySecurityType.printTable()
-	pStats.bondsByMaturityRange.printTable()
-	pStats.bondsBySpRating.printTable()
+//	pStats.bondsBySecurityType.printBonds()
+//	pStats.bondsByMaturityRange.printBonds()
+//	pStats.bondsBySpRating.printBonds()
+//
+//	pStats.printStats()
+//	println(pStats.yieldAtCost)
 
-	pStats.printStats()
-	println(pStats.yieldAtCost)
+	pStats.percentagesByMaturityRange.printDistribution("Maturity Distribution")
+	pStats.percentagesBySecurityType.printDistribution("Sector Distribution")
+	pStats.percentagesBySpRating.printDistribution("Credit Distribution")
+
 }
 
-private fun <T> Map<T, Bonds>.printTable() {
-	val tablePrinter = TablePrinter()
+private fun <T> Map<T, Bonds>.printBonds() {
+	val textTable = TextTable()
 	this.forEach { (key, bonds) ->
 		run {
-			tablePrinter.addBondsInDetail("$key", bonds)
+			textTable.addBondsInDetail("$key", bonds)
 		}
 	}
-	tablePrinter.render()
+	textTable.render()
+}
+
+
+private fun <T> Map<T, Double>.printDistribution(title: String) {
+	val textTable = TextTable()
+	textTable.addTitle(title, 2)
+	this.forEach { (key, value) ->
+		run {
+			textTable.addKeyValue("$key", value.toPercent())
+				 .setTextAlignment(TextAlignment.LEFT)
+		}
+	}
+	textTable.setMediumColumnWidth()
+	textTable.render()
+
 }
 
