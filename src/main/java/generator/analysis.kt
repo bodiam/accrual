@@ -23,12 +23,12 @@ class PortfolioStatistics(val bonds: Bonds) {
 	// list of bonds by property
 	val bondsBySecurityType: Map<SecurityType, Bonds> = mapBondsByProperty { it.securityType }
 	val bondsByMaturityRange: Map<MaturityRange, Bonds> = mapBondsByProperty { it.maturityRange }
-	val bondsBySpRating: Map<SpRating, Bonds> = mapBondsByProperty { it.spRating }
+	val bondsBySpRating: Map<SpRating?, Bonds> = mapBondsByProperty { it.spRating }
 
 	//percentages by property
 	val percentagesBySecurityType: Map<SecurityType, Double> = getAllocationByProperty { it.securityType }
 	val percentagesByMaturityRange: Map<MaturityRange, Double> = getAllocationByProperty { it.maturityRange }
-	val percentagesBySpRating: Map<SpRating, Double> = getAllocationByProperty { it.spRating }
+	val percentagesBySpRating: Map<SpRating?, Double> = getAllocationByProperty { it.spRating }
 
 	private fun <T> getAllocationByProperty(
 		 getBondProperty: (bond: TradedBond) -> T

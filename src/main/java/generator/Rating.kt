@@ -1,5 +1,8 @@
 package generator
 
+import java.util.*
+
+
 interface Rating {
 	val rating: String
 	val agency: RatingAgency
@@ -41,6 +44,20 @@ enum class SpRating(
 	A_3("A-3", Grade.Good, Term.ShortTerm),
 	NotRated()
 	;
+
+	companion object {
+		private val ratingMap = HashMap<String, SpRating>(values().size, 1f)
+
+		init {
+			ratingMap.forEach { (_, value) ->
+				ratingMap[value.rating] = value
+			}
+		}
+
+		fun of(name: String): SpRating {
+			return ratingMap[name] ?: throw IllegalArgumentException("Invalid rating name: $name")
+		}
+	}
 
 	override fun toString(): String {
 		return rating

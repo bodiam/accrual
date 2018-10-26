@@ -15,4 +15,5 @@ enum class SecurityType(val desc: String) {
 		return desc
 	}
 
+
 }

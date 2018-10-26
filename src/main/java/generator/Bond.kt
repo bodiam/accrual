@@ -7,20 +7,20 @@ import java.time.temporal.ChronoUnit.DAYS
 class TradedBond(
 	 val cusip: String,
 	 val currentDate: LocalDate,
-	 val tradeDate: LocalDate,
-	 val settleDate: LocalDate,
+	 val tradeDate: LocalDate?,
+	 val settleDate: LocalDate?,
 	 val originalCost: Double,
 	 val amortizedCost: Double,
 	 val marketValue: Double,
 	 val accruedInterest: Double,
 	 val yieldAtCost: Double,
 	 securityType: SecurityType,
-	 description: String,
+	 description: String?,
 	 maturityDate: LocalDate,
 	 par: Double,
 	 coupon: Double,
-	 spRating: SpRating,
-	 moodysRating: MoodysRating
+	 spRating: SpRating?,
+	 moodysRating: MoodysRating?
 ) : Bond(
 	 securityType = securityType,
 	 description = description,
@@ -62,8 +62,8 @@ class TradedBond(
 	override fun hashCode(): Int {
 		var result = cusip.hashCode()
 		result = 31 * result + currentDate.hashCode()
-		result = 31 * result + tradeDate.hashCode()
-		result = 31 * result + settleDate.hashCode()
+		result = 31 * result + (tradeDate?.hashCode() ?: 0)
+		result = 31 * result + (settleDate?.hashCode() ?: 0)
 		result = 31 * result + originalCost.hashCode()
 		result = 31 * result + amortizedCost.hashCode()
 		result = 31 * result + marketValue.hashCode()
@@ -79,12 +79,12 @@ class TradedBond(
 
 open class Bond(
 	 val securityType: SecurityType,
-	 val description: String,
+	 val description: String?,
 	 val maturityDate: LocalDate,
 	 val par: Double,
 	 val coupon: Double,
-	 val spRating: SpRating,
-	 val moodysRating: MoodysRating
+	 val spRating: SpRating?,
+	 val moodysRating: MoodysRating?
 ) {
 	override fun toString(): String {
 		return "Bond(securityType=$securityType, description='$description', maturityDate=$maturityDate, par=$par, coupon=$coupon, spRating=$spRating, moodysRating=$moodysRating)"

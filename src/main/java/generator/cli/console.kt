@@ -75,8 +75,8 @@ class TextTable {
 				 b.yieldAtCost.toPercent(),
 				 b.amortizedCost.withCommas(),
 				 b.marketValue.withCommas(),
-				 b.spRating.rating,
-				 b.moodysRating.rating
+				 b.spRating?.rating,
+				 b.moodysRating?.rating
 			)
 			table.addRule()
 		}

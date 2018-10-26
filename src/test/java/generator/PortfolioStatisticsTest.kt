@@ -70,7 +70,7 @@ internal class PortfolioStatisticsTest {
 
 	@Test
 	fun getpercentagesBySpRating() {
-		val spRatings: MutableSet<SpRating> = HashSet(testBonds.map { it.spRating })
+		val spRatings: HashSet<SpRating?> = HashSet(testBonds.map { it.spRating })
 		spRatings.map { rating ->
 			val expected = testBonds.asSequence()
 				 .filter { it.spRating == rating }
