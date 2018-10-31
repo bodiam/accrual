@@ -3,6 +3,7 @@ package generator
 import generatoar.SecurityType
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVParser
+import org.apache.commons.csv.CSVRecord
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -12,14 +13,10 @@ import java.time.format.DateTimeFormatter
 
 const val CSV_FILEPATH = "/users/vince/Downloads/sample-portfolio-data.csv"
 
-fun main(args: Array<String>) {
-	parseCsvForBonds()
-}
-
-fun parseCsvForBonds(): List<TradedBond> {
+fun parseBonds(file: String): List<TradedBond> {
 	val bonds = ArrayList<TradedBond>()
 	try {
-		val reader = Files.newBufferedReader(Paths.get(CSV_FILEPATH))
+		val reader = Files.newBufferedReader(Paths.get(file))
 		val csvParser = CSVParser(reader, CSVFormat.DEFAULT
 			 .withFirstRecordAsHeader()
 			 .withIgnoreHeaderCase()
@@ -35,40 +32,43 @@ fun parseCsvForBonds(): List<TradedBond> {
 				 securityType = row.get("security type").toSecurityType(),
 				 cusip = row.get("cusip"),
 				 par = row.get("par").toDouble(),
-				 coupon = row.get("coupon rate").toDouble(),
+				 coupon = row.get("coupon rate").toDouble() / 100,
 				 originalCost = row.get("original cost").toDouble(),
 				 amortizedCost = row.get("amortized cost").toDouble(),
 				 marketValue = row.get("market value").toDouble(),
 				 accruedInterest = row.get("accrued interest").toDouble(),
-				 yieldAtCost = row.get("yield at cost").toDouble(),
-				 spRating = SpRating.BBB_Plus,
+				 yieldAtCost = row.get("yield at cost").toDouble() / 100,
+				 spRating = SpRating.getRating(row.get("s&p rating")),
 				 // ignore these properties for now
 				 description = null,
 				 tradeDate = null,
 				 settleDate = null,
 				 moodysRating = null
 			)
+			bonds.add(bond)
 
-
-			println("Record No - " + row.getRecordNumber())
-			println("---------------")
-			println(bond)
-			println("---------------\n")
+			print(row, bond)
 		}
 	} catch (e: IOException) {
 		println(e.message)
 		System.exit(0)
 	}
 	return bonds
-
 }
 
-fun String.toLocalDate(): LocalDate {
+private fun print(row: CSVRecord, bond: TradedBond) {
+	println("Record No - " + row.getRecordNumber())
+	println("---------------")
+	println(bond)
+	println("---------------\n")
+}
+
+private fun String.toLocalDate(): LocalDate {
 	val formatter = DateTimeFormatter.ofPattern("M/d/yy")
 	return LocalDate.parse(this, formatter)
 }
 
-fun String.toSecurityType(): SecurityType {
+private fun String.toSecurityType(): SecurityType {
 	return when (this.toLowerCase()) {
 		"u.s. treasury" -> SecurityType.Treasury
 		"corporate" -> SecurityType.Corporate
@@ -81,6 +81,8 @@ fun String.toSecurityType(): SecurityType {
 		else -> throw NoSuchElementException("No security type of $this found")
 	}
 }
+
+
 
 
 

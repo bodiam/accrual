@@ -9,6 +9,7 @@ import java.util.*
 typealias Bonds = List<TradedBond>
 
 class PortfolioStatistics(val bonds: Bonds) {
+	//totals
 	val par: Double = bonds.sumByDouble { it.par }
 	val originalCost: Double = bonds.sumByDouble { it.originalCost }
 	val amortizerdCost: Double = bonds.sumByDouble { it.amortizedCost }
@@ -62,7 +63,7 @@ class PortfolioStatistics(val bonds: Bonds) {
 		textTable.addKeyValue("Yield At Cost", yieldAtCost.toPercent())
 		textTable.addKeyValue("Average Maturity", "${maturity.withCommas()} Years")
 
-		textTable.table.setTextAlignment(TextAlignment.CENTER)
+		textTable.setMediumColumnWidth()
 		textTable.render()
 	}
 
@@ -81,21 +82,23 @@ class PortfolioStatistics(val bonds: Bonds) {
 }
 
 fun main(args: Array<String>) {
-	val pStats = PortfolioStatistics(createTestBonds())
+	val bonds = parseBonds(CSV_FILEPATH)
+	val pStats = PortfolioStatistics(bonds)
 //	pStats.bondsBySecurityType.printBonds()
 //	pStats.bondsByMaturityRange.printBonds()
 //	pStats.bondsBySpRating.printBonds()
 //
-//	pStats.printStats()
+	pStats.printStats()
 //	println(pStats.yieldAtCost)
 
 	pStats.percentagesByMaturityRange.printDistribution("Maturity Distribution")
 	pStats.percentagesBySecurityType.printDistribution("Sector Distribution")
 	pStats.percentagesBySpRating.printDistribution("Credit Distribution")
 
+
 }
 
-private fun <T> Map<T, Bonds>.printBonds() {
+fun <T> Map<T, Bonds>.printBonds() {
 	val textTable = TextTable()
 	this.forEach { (key, bonds) ->
 		run {
@@ -106,7 +109,7 @@ private fun <T> Map<T, Bonds>.printBonds() {
 }
 
 
-private fun <T> Map<T, Double>.printDistribution(title: String) {
+fun <T> Map<T, Double>.printDistribution(title: String) {
 	val textTable = TextTable()
 	textTable.addTitle(title, 2)
 	this.forEach { (key, value) ->

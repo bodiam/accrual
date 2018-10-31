@@ -6,8 +6,13 @@ import java.util.*
 interface Rating {
 	val rating: String
 	val agency: RatingAgency
-	val grade: Grade
-	val term: Term
+	val grade: Grade?
+	val term: Term?
+}
+
+enum class Term {
+	ShortTerm,
+	LongTerm;
 }
 
 enum class Grade constructor(val desc: String, val investmentGrade: Boolean?) {
@@ -21,10 +26,21 @@ enum class Grade constructor(val desc: String, val investmentGrade: Boolean?) {
 	Default("In Default", false),
 }
 
+private fun <T : Rating> createRatingMap(creditRatings: Array<T>): HashMap<String, T> {
+	val ratingMap = HashMap<String, T>()
+	for (creditRating in creditRatings) ratingMap[creditRating.rating] = creditRating
+
+	return ratingMap
+}
+
+fun <T : Rating> Map<String, T>.of(name: String): T {
+	return this[name] ?: throw IllegalArgumentException("Invalid rating name: $name")
+}
+
 enum class SpRating(
 	 override val rating: String,
-	 override val grade: Grade,
-	 override val term: Term
+	 override val grade: Grade?,
+	 override val term: Term?
 ) : Rating {
 	//long term ratings
 	AAA("AAA", Grade.Prime, Term.LongTerm),
@@ -42,20 +58,14 @@ enum class SpRating(
 	A_1("A-1", Grade.VeryHigh, Term.ShortTerm),
 	A_2("A-2", Grade.High, Term.ShortTerm),
 	A_3("A-3", Grade.Good, Term.ShortTerm),
-	NotRated()
+	NotRated("NR", null, null)
 	;
 
 	companion object {
-		private val ratingMap = HashMap<String, SpRating>(values().size, 1f)
+		private val ratingMap = createRatingMap(values())
 
-		init {
-			ratingMap.forEach { (_, value) ->
-				ratingMap[value.rating] = value
-			}
-		}
-
-		fun of(name: String): SpRating {
-			return ratingMap[name] ?: throw IllegalArgumentException("Invalid rating name: $name")
+		fun getRating(rating: String): SpRating? {
+			return ratingMap.of(rating)
 		}
 	}
 
@@ -63,16 +73,13 @@ enum class SpRating(
 		return rating
 	}
 
-	//for NotRated type
-	constructor()
-
 	override val agency = RatingAgency.SP
 }
 
 enum class MoodysRating(
 	 override val rating: String,
-	 override val grade: Grade,
-	 override val term: Term
+	 override val grade: Grade?,
+	 override val term: Term?
 ) : Rating {
 	//long term ratings
 	Aaa("Aaa", Grade.Prime, Term.LongTerm),
@@ -89,12 +96,18 @@ enum class MoodysRating(
 	P_1("P-1", Grade.Prime, Term.ShortTerm),
 	P_2("A-1", Grade.High, Term.ShortTerm),
 	P_3("A-2", Grade.Good, Term.ShortTerm),
+
+	NotRated("NR", null, null)
 	;
+
+	companion object {
+		private val ratingMap = createRatingMap(values())
+
+		fun getRating(name: String): MoodysRating? {
+			return ratingMap.of(name)
+		}
+	}
 
 	override val agency = RatingAgency.Moodys
 }
 
-enum class Term {
-	ShortTerm,
-	LongTerm;
-}
