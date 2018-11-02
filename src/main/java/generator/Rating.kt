@@ -2,7 +2,6 @@ package generator
 
 import java.util.*
 
-
 interface Rating {
 	val rating: String
 	val agency: RatingAgency
