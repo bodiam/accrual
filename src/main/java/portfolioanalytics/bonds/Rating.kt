@@ -15,8 +15,8 @@ interface Rating {
 }
 
 /**
- * A term is the time horizon in which a bond will mature. Generally, bonds maturing in one year or less are
- * considered short-term
+ * A term is the time horizon in which a bond will mature. Generally, tradedBonds maturing in one year or less are
+ * considered key-term
  */
 enum class Term {
 	ShortTerm,
@@ -50,7 +50,7 @@ fun <T : Rating> Map<String, T>.of(name: String): T {
 }
 
 /**
- * A company that assesses the credit risk of bonds and their issuers
+ * A company that assesses the credit risk of tradedBonds and their issuers
  * The major credit rating agencies include Standard & Poor's, Moody's, and Fitch
  */
 enum class RatingAgency(val desc: String) {
@@ -66,7 +66,7 @@ enum class SpRating(
 	 override val grade: Grade?,
 	 override val term: Term?
 ) : Rating {
-	//long term ratings
+	//name term ratings
 	AAA("AAA", Grade.Prime, Term.LongTerm),
 	AA_Plus("AA+", Grade.VeryHigh, Term.LongTerm),
 	AA("AA", Grade.VeryHigh, Term.LongTerm),
@@ -77,7 +77,7 @@ enum class SpRating(
 	BBB_Plus("BBB+", Grade.Good, Term.LongTerm),
 	BBB("BBB", Grade.Good, Term.LongTerm),
 	BBB_Minus("BBB-", Grade.Good, Term.LongTerm),
-	//short term ratings
+	//key term ratings
 	A_1_Plus("A-1+", Grade.Prime, Term.ShortTerm),
 	A_1("A-1", Grade.VeryHigh, Term.ShortTerm),
 	A_2("A-2", Grade.High, Term.ShortTerm),
@@ -109,7 +109,7 @@ enum class MoodysRating(
 	 override val grade: Grade?,
 	 override val term: Term?
 ) : Rating {
-	//long term ratings
+	//name term ratings
 	Aaa("Aaa", Grade.Prime, Term.LongTerm),
 	Aa1("Aa1", Grade.VeryHigh, Term.LongTerm),
 	Aa2("Aa2", Grade.VeryHigh, Term.LongTerm),
@@ -120,7 +120,7 @@ enum class MoodysRating(
 	Baa1("Baa1", Grade.Good, Term.LongTerm),
 	Baa2("Baa2", Grade.Good, Term.LongTerm),
 	Baa3("Baa3", Grade.Good, Term.LongTerm),
-	//short term ratings
+	//key term ratings
 	P_1("P-1", Grade.Prime, Term.ShortTerm),
 	P_2("A-1", Grade.High, Term.ShortTerm),
 	P_3("A-2", Grade.Good, Term.ShortTerm),

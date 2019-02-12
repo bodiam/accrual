@@ -4,19 +4,14 @@ import de.vandermeer.asciitable.AT_Row
 import de.vandermeer.asciitable.AsciiTable
 import de.vandermeer.asciitable.CWC_LongestWordMin
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
-import portfolioanalytics.Bonds
+import portfolioanalytics.TradedBonds
 import portfolioanalytics.bonds.createSampleBonds
 import portfolioanalytics.toPercent
 import portfolioanalytics.withCommas
 
-fun main(args: Array<String>) {
-	val bonds = createSampleBonds()
-	val textTable = TextTable()
-	textTable.addBondsInDetail("Portfolio Bonds", bonds)
-	textTable.setMediumColumnWidth()
-	textTable.render()
-}
-
+/**
+ * Prints ASCII tables
+ */
 internal class TextTable {
 	private val table = AsciiTable()
 
@@ -24,6 +19,9 @@ internal class TextTable {
 		table.addRule()
 	}
 
+	/**
+	 * Adds the header row
+	 */
 	private fun addHeaders(title: String, headers: Array<String>) {
 		/* setup title */
 		addTitle(title, headers.size)
@@ -34,6 +32,12 @@ internal class TextTable {
 		table.addRule()
 	}
 
+	/**
+	 * Adds a title to the table
+	 * @param title the title name
+	 * @param numOfColumns the number of columns the title should span (should be equal to the max number of
+	 * columns in the table)
+	 */
 	internal fun addTitle(title: String, numOfColumns: Int) {
 		/* setup title */
 		val nulls = arrayOfNulls<String>(numOfColumns)
@@ -62,16 +66,22 @@ internal class TextTable {
 		println(table.render())
 	}
 
+	/**
+	 * Adds a key-value row to the table
+	 */
 	internal fun addKeyValue(key: String, value: Any): AT_Row {
 		val row = table.addRow(key, value)
 		table.addRule()
 		return row
 	}
 
-	internal fun addBondsInDetail(title: String, bonds: Bonds) {
+	/**
+	 * Adds a list of tradedBonds to the table
+	 */
+	internal fun addBondsInDetail(title: String, tradedBonds: TradedBonds) {
 		addHeaders(title, arrayOf("CUSIP", "Par", "Coupon", "Maturity Date", "YTM At Cost", "Original Cost", "Amortized Cost", "Market Value", "S&P Rating"))
 
-		for (b in bonds) {
+		for (b in tradedBonds) {
 			table.addRow(
 				 b.cusip,
 				 b.par.withCommas(),
@@ -88,3 +98,11 @@ internal class TextTable {
 	}
 }
 
+//main funciton for testing
+fun main(args: Array<String>) {
+	val bonds = createSampleBonds()
+	val textTable = TextTable()
+	textTable.addBondsInDetail("Portfolio TradedBonds", bonds)
+	textTable.setMediumColumnWidth()
+	textTable.render()
+}

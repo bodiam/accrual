@@ -3,15 +3,18 @@ package portfolioanalytics.cli
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
 import portfolioanalytics.*
 
+/**
+ * Prints the portfolio statistics table
+ */
 fun printStats(portfolio: Portfolio) {
 	val textTable = TextTable()
-	textTable.addTitle("Portfolio Statistics <br/> As of ${portfolio.date.format(dateFormatter)}", 2)
+	textTable.addTitle("Portfolio Statistics <br/> As of ${portfolio.evaluationDate.format(dateFormatter)}", 2)
 
-	textTable.addKeyValue("Par", portfolio.par.withCommas())
-	textTable.addKeyValue("Market Value", portfolio.marketValue.withCommas())
-	textTable.addKeyValue("Amortized Cost", portfolio.amortizerdCost.withCommas())
-	textTable.addKeyValue("Original Cost", portfolio.originalCost.withCommas())
-	textTable.addKeyValue("Accrued Interest", portfolio.accruedInterest.withCommas())
+	textTable.addKeyValue("Par", portfolio.total.par.withCommas())
+	textTable.addKeyValue("Market Value", portfolio.total.marketValue.withCommas())
+	textTable.addKeyValue("Amortized Cost", portfolio.total.amortizerdCost.withCommas())
+	textTable.addKeyValue("Original Cost", portfolio.total.originalCost.withCommas())
+	textTable.addKeyValue("Accrued Interest", portfolio.total.accruedInterest.withCommas())
 	textTable.addKeyValue("Yield At Cost", portfolio.yieldAtCost.toPercent())
 	textTable.addKeyValue("Average Maturity", "${portfolio.maturity.withCommas()} Years")
 
@@ -19,7 +22,11 @@ fun printStats(portfolio: Portfolio) {
 	textTable.render()
 }
 
-fun <T> Map<T, Bonds>.printBonds() {
+/**
+ * Prints a table of all bonds in detail
+ * @property T the type determining how the bonds are grouped (ex. maturityRange, securityType)
+ */
+fun <T> Map<T, TradedBonds>.printBonds() {
 	val textTable = TextTable()
 	this.forEach { (key, bonds) ->
 		run {
@@ -30,6 +37,12 @@ fun <T> Map<T, Bonds>.printBonds() {
 	textTable.render()
 }
 
+/**
+ * Prints a table of the percentage bond distributions in the portfolio
+ * @property T the type determining how the bonds are distributed in the portfolio (ex. maturityRange,
+ * securityType)
+ * @property Double percentage total for type T
+ */
 fun <T> Map<T, Double>.printDistribution(title: String) {
 	val textTable = TextTable()
 	textTable.addTitle(title, 2)
@@ -43,14 +56,23 @@ fun <T> Map<T, Double>.printDistribution(title: String) {
 	textTable.render()
 }
 
-fun printlnWithPrefix(prefix: String = Shell.MARGIN_MENU_OPTION, str: String) {
-	println("$prefix${Shell.MARGIN_MENU_OPTION}$str")
+/**
+ * Adds a prefix before the input string
+ */
+fun printlnWithPrefix(prefix: String = Shell.MARGIN_MENU_OPTION, input: String) {
+	println("$prefix${Shell.MARGIN_MENU_OPTION}$input")
 }
 
-fun printOption(prefix: String = Shell.MARGIN_MENU_OPTION, bullet: String, content: String) {
-	printlnWithPrefix(prefix, "${bullet.addBulletStyling()} $content")
+/**
+ * Adds a prefix and bullet before the input string
+ */
+fun printOption(prefix: String = Shell.MARGIN_MENU_OPTION, bullet: String, input: String) {
+	printlnWithPrefix(prefix, "${bullet.addBulletStyling()} $input")
 }
 
+/**
+ * Adds styling to the bullet string
+ */
 fun String.addBulletStyling(): String {
 	return """[$this]"""
 }

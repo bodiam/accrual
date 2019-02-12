@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource
 import org.mockito.Mockito.*
 import portfolioanalytics.Portfolio
 import portfolioanalytics.bonds.createSampleBonds
+import portfolioanalytics.normalize
 import kotlin.test.assertEquals
 
 
@@ -25,7 +26,7 @@ internal class ShellTest {
 	fun chooseAction_shutdown(input: String) {
 		val shellSpy = spy(shell)
 		doNothing().`when`(shellSpy).shutdown()
-		shellSpy.chooseAction(input)
+		shellSpy.inputHandler(input)
 		verify(shellSpy).shutdown()
 	}
 
@@ -34,7 +35,7 @@ internal class ShellTest {
 	internal fun chooseAction_help(input: String) {
 		val shellSpy = spy(shell)
 
-		shellSpy.chooseAction(input)
+		shellSpy.inputHandler(input)
 
 		verify(shellSpy).printHelpScreen()
 	}
@@ -47,7 +48,7 @@ internal class ShellTest {
 		//switch current menu off main menu
 		shellSpy.currentMenu = Menu("fake menu", HashMap())
 
-		shellSpy.chooseAction(input)
+		shellSpy.inputHandler(input)
 
 		verify(shellSpy).printMainMenuScreen()
 		assertEquals(shellSpy.mainMenu, shellSpy.currentMenu)
@@ -72,7 +73,7 @@ internal class ShellTest {
 	@ParameterizedTest
 	@CsvSource(" 1   , 1", " 2a , 2a")
 	fun inputNormalization(input: String, expected: String) {
-		val actual = input.normalizeInput()
+		val actual = input.normalize()
 		assertEquals(expected, actual)
 	}
 

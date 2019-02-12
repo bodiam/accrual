@@ -3,7 +3,7 @@ package portfolioanalytics.cli
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVParser
 import org.apache.commons.csv.CSVRecord
-import portfolioanalytics.Bonds
+import portfolioanalytics.TradedBonds
 import portfolioanalytics.bonds.MoodysRating
 import portfolioanalytics.bonds.SecurityType
 import portfolioanalytics.bonds.SpRating
@@ -14,25 +14,32 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.LocalDate
 
-
+/**
+ * CsvParser parses a CSV file containing bond data.
+ * @property filePath absolute path to CSV file
+ */
 class CsvParser(
-	 private val filepath: String
+	 private val filePath: String
 ) {
-	private lateinit var bonds: Bonds
+	private lateinit var tradedBonds: TradedBonds
 
-	fun getBonds(): Bonds {
+	/**
+	 * Parses a CSV file and returns a list of tradedBonds
+	 * @throws IOException if there is a problem reading the header columns
+	 */
+	fun getBonds(): TradedBonds {
 		try {
-			bonds = parseBondsFromFile()
+			tradedBonds = parseBondsFromFile()
 		} catch (e: IOException) {
 			println(e.message)
 			System.exit(0)
 		}
-		return bonds
+		return tradedBonds
 	}
 
-	private fun parseBondsFromFile(): Bonds {
-		val bonds = ArrayList<TradedBond>()
-		val reader = Files.newBufferedReader(Paths.get(filepath))
+	private fun parseBondsFromFile(): TradedBonds {
+		val tradedBonds = ArrayList<TradedBond>()
+		val reader = Files.newBufferedReader(Paths.get(filePath))
 		val csvParser = CSVParser(reader, CSVFormat.DEFAULT
 			 .withFirstRecordAsHeader()
 			 .withIgnoreHeaderCase()
@@ -40,12 +47,11 @@ class CsvParser(
 		)
 		for (row in csvParser) {
 			if (row.get(0).isBlank()) break
-
-			bonds.add(
+			tradedBonds.add(
 				 createTradedBond(row)
 			)
 		}
-		return bonds
+		return tradedBonds
 	}
 
 
@@ -58,7 +64,7 @@ class CsvParser(
 		val moodysRating = row.getIfExists("moodys rating")
 
 		return TradedBond(
-			 date = row.get("current date").toLocalDate(),
+			 evaluationDate = row.get("current date").toLocalDate(),
 			 maturityDate = row.get("maturity date").toLocalDate(),
 			 securityType = row.get("security type").toSecurityType(),
 			 cusip = row.get("cusip"),

@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit.DAYS
  */
 class TradedBond(
 	 val cusip: String,
-	 val date: LocalDate,
+	 val evaluationDate: LocalDate,
 	 val tradeDate: LocalDate?,
 	 val settleDate: LocalDate?,
 	 val originalCost: Double,
@@ -33,12 +33,12 @@ class TradedBond(
 	 spRating = spRating,
 	 moodysRating = moodysRating
 ) {
-	val daysToMaturity: Long = DAYS.between(date, maturityDate)
+	val daysToMaturity: Long = DAYS.between(evaluationDate, maturityDate)
 	val maturityRange: MaturityRange = MaturityRange.getRange(daysToMaturity.toInt())
 
 
 	override fun toString(): String {
-		return "TradedBond(cusip='$cusip', date=$date, tradeDate=$tradeDate, settleDate=$settleDate, originalCost=$originalCost, amortizedCost=$amortizedCost, marketValue=$marketValue, accruedInterest=$accruedInterest, yieldAtCost=$yieldAtCost, daysToMaturity=$daysToMaturity, maturityRange=$maturityRange)"
+		return "TradedBond(cusip='$cusip', evaluationDate=$evaluationDate, tradeDate=$tradeDate, settleDate=$settleDate, originalCost=$originalCost, amortizedCost=$amortizedCost, marketValue=$marketValue, accruedInterest=$accruedInterest, yieldAtCost=$yieldAtCost, daysToMaturity=$daysToMaturity, maturityRange=$maturityRange)"
 	}
 
 	override fun equals(other: Any?): Boolean {
@@ -48,7 +48,7 @@ class TradedBond(
 		other as TradedBond
 
 		if (cusip != other.cusip) return false
-		if (date != other.date) return false
+		if (evaluationDate != other.evaluationDate) return false
 		if (tradeDate != other.tradeDate) return false
 		if (settleDate != other.settleDate) return false
 		if (originalCost != other.originalCost) return false
@@ -64,7 +64,7 @@ class TradedBond(
 
 	override fun hashCode(): Int {
 		var result = cusip.hashCode()
-		result = 31 * result + date.hashCode()
+		result = 31 * result + evaluationDate.hashCode()
 		result = 31 * result + (tradeDate?.hashCode() ?: 0)
 		result = 31 * result + (settleDate?.hashCode() ?: 0)
 		result = 31 * result + originalCost.hashCode()

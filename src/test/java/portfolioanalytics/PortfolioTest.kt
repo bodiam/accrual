@@ -21,7 +21,7 @@ internal class PortfolioTest {
 	@Test
 	fun getBondsBySecurityType() {
 		for (testBond in testBonds) {
-			val bondFound = portfolio.bondsBySecurityType[testBond.securityType]!!.find { bond -> bond == testBond }
+			val bondFound = portfolio.bondDetails.bondsBySecurityType[testBond.securityType]!!.find { bond -> bond == testBond }
 			assertNotNull(bondFound)
 		}
 	}
@@ -29,7 +29,7 @@ internal class PortfolioTest {
 	@Test
 	fun getBondsByMaturityRange() {
 		for (testBond in testBonds) {
-			val bondFound = portfolio.bondsByMaturityRange[testBond.maturityRange]!!.find { bond -> bond == testBond }
+			val bondFound = portfolio.bondDetails.bondsByMaturityRange[testBond.maturityRange]!!.find { bond -> bond == testBond }
 			assertNotNull(bondFound)
 		}
 	}
@@ -37,7 +37,7 @@ internal class PortfolioTest {
 	@Test
 	fun getBondsBySpRating() {
 		for (testBond in testBonds) {
-			val bondFound = portfolio.bondsBySpRating[testBond.spRating]!!.find { bond -> bond == testBond }
+			val bondFound = portfolio.bondDetails.bondsBySpRating[testBond.spRating]!!.find { bond -> bond == testBond }
 			assertNotNull(bondFound)
 		}
 	}
@@ -48,12 +48,12 @@ internal class PortfolioTest {
 		securityTypes.map { type ->
 			val expected = testBonds.asSequence()
 				 .filter { it.securityType == type }
-				 .sumByDouble { it.marketValue / portfolio.marketValue }
+				 .sumByDouble { it.marketValue / portfolio.total.marketValue }
 
-			assertEquals(expected, portfolio.percentagesBySecurityType[type])
+			assertEquals(expected, portfolio.allocation.percentagesBySecurityType[type])
 		}
 
-		val total = portfolio.percentagesBySecurityType.values.sumByDouble { it }
+		val total = portfolio.allocation.percentagesBySecurityType.values.sumByDouble { it }
 		assertEquals(1.0, round(total, 2))
 	}
 
@@ -64,10 +64,10 @@ internal class PortfolioTest {
 		maturityRanges.map { range ->
 			val expected = testBonds.asSequence()
 				 .filter { it.maturityRange == range }
-				 .sumByDouble { it.marketValue / portfolio.marketValue }
-			assertEquals(expected, portfolio.percentagesByMaturityRange[range])
+				 .sumByDouble { it.marketValue / portfolio.total.marketValue }
+			assertEquals(expected, portfolio.allocation.percentagesByMaturityRange[range])
 		}
-		val total = portfolio.percentagesByMaturityRange.values.sumByDouble { it }
+		val total = portfolio.allocation.percentagesByMaturityRange.values.sumByDouble { it }
 		assertEquals(1.0, round(total, 2))
 	}
 
@@ -77,10 +77,10 @@ internal class PortfolioTest {
 		spRatings.map { rating ->
 			val expected = testBonds.asSequence()
 				 .filter { it.spRating == rating }
-				 .sumByDouble { it.marketValue / portfolio.marketValue }
-			assertEquals(expected, portfolio.percentagesBySpRating[rating])
+				 .sumByDouble { it.marketValue / portfolio.total.marketValue }
+			assertEquals(expected, portfolio.allocation.percentagesBySpRating[rating])
 		}
-		val total = portfolio.percentagesBySpRating.values.sumByDouble { it }
+		val total = portfolio.allocation.percentagesBySpRating.values.sumByDouble { it }
 		assertEquals(1.0, round(total, 2))
 	}
 

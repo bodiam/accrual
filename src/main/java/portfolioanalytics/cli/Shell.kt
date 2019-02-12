@@ -3,61 +3,75 @@ package portfolioanalytics.cli
 import portfolioanalytics.APP_NAME
 import portfolioanalytics.Portfolio
 import portfolioanalytics.bonds.createSampleBonds
-import portfolioanalytics.cli.ReportOption.Companion.createSubMenu
+import portfolioanalytics.cli.PrintOption.Companion.createSubMenu
+import portfolioanalytics.normalize
 import java.util.*
 import kotlin.collections.LinkedHashMap
 
-fun main(args: Array<String>) {
-	val portfolio = Portfolio(createSampleBonds())
-	val shell = Shell(portfolio)
-	shell.init()
-}
-
-class Shell(val portfolio: Portfolio) {
+/**
+ * Interactive user-interface.
+ * @property mainMenu the main menu for the application
+ * @property currentMenu the menu currently selected by the user
+ */
+class Shell(private val portfolio: Portfolio) {
 	internal val mainMenu: Menu = createMainMenu()
 	internal var currentMenu: Menu = mainMenu
 
+	/**
+	 * Initializes the shell.
+	 */
 	fun init() {
 		this.introToConsole()
 		this.printMainMenuScreen()
 		this.setUpResponseReader()
 	}
 
-
 	companion object {
+		class KeyInput(
+			 val name: String,
+			 val key: String
+		)
+
+		//menu input keys
 		val MAIN_MENU_INPUT = KeyInput("main", "m")
 		val QUIT_INPUT = KeyInput("quit", "q")
 		val HELP_INPUT = KeyInput("help", "h")
 
+
+		const val USER_INPUT_SYMBOL = ">> "
+
+		//margin sizes
 		const val MARGIN_MENU_OPTION = "   "
 		const val MARGIN_MENU_SUBOPTION = "     "
-
 	}
 
+	/**
+	 * Sets up response reader to read user input until user exits the application.
+	 */
 	private fun setUpResponseReader() {
 		val scanner = Scanner(System.`in`)
 		while (true) {
-			val input = scanner.askForUserInput().normalizeInput()
-			chooseAction(input)
+			val input = scanner.askForUserInput().normalize()
+			inputHandler(input)
 		}
 	}
 
 	private fun createMainMenu(): Menu {
-		val options = LinkedHashMap<String, ReportOption>()
+		val options = LinkedHashMap<String, PrintOption>()
 		var optionCount = 1
-		options[optionCount++.toString()] = ReportOption(
+		options[optionCount++.toString()] = PrintOption(
 			 name = "Portfolio Stats",
 			 primaryAction = { printStats(portfolio) }
 		)
 
 		val distributionName = "Distributions"
-		options[optionCount++.toString()] = ReportOption(
+		options[optionCount++.toString()] = PrintOption(
 			 name = distributionName,
 			 subMenu = createSubMenu(distributionName, *createDistributionOptions(portfolio))
 		)
 
 		val bondListName = "Detailed Bond Listings"
-		options[optionCount++.toString()] = ReportOption(
+		options[optionCount++.toString()] = PrintOption(
 			 name = bondListName,
 			 subMenu = createSubMenu(bondListName, *createBondOptions(portfolio))
 		)
@@ -65,16 +79,24 @@ class Shell(val portfolio: Portfolio) {
 		return Menu("Main Menu", options)
 	}
 
-	internal fun chooseAction(input: String) {
+	/**
+	 * Performs an action based on user input.
+	 * @param input the user input
+	 */
+	internal fun inputHandler(input: String) {
 		when (input) {
-			QUIT_INPUT.long, QUIT_INPUT.short -> shutdown()
-			MAIN_MENU_INPUT.long, MAIN_MENU_INPUT.short -> printMainMenuScreen()
-			HELP_INPUT.long, HELP_INPUT.short -> printHelpScreen()
+			QUIT_INPUT.name, QUIT_INPUT.key -> shutdown()
+			MAIN_MENU_INPUT.name, MAIN_MENU_INPUT.key -> printMainMenuScreen()
+			HELP_INPUT.name, HELP_INPUT.key -> printHelpScreen()
 			else -> respond(input)
 		}
 	}
 
-	internal fun respond(input: String): ReportOption? {
+	/**
+	 * Prints out a response given the user input.
+	 * @input the user input
+	 */
+	internal fun respond(input: String): PrintOption? {
 		val option = parseInput(input, input.toCharArray())
 		when {
 			option == null -> printInvalidInput(input)
@@ -86,24 +108,30 @@ class Shell(val portfolio: Portfolio) {
 		return option
 	}
 
+	/**
+	 * Exits the application!
+	 */
 	fun shutdown() {
-		println("Shutting down...")
+		println("Shutting down...Bye!")
 		System.exit(0)
 	}
 
+	/**
+	 * Prints help text in case the user is confused on how to use the UI.
+	 */
 	internal fun printHelpScreen() {
 		println("--- Help Page ---")
 		println("Choose an option by entering the value corresponding to the option")
 		println("Example:")
 		printMainMenuScreen(false)
-		printlnWithPrefix(str = "Enter \"1\" to choose the [1]st option.")
-		printlnWithPrefix(str = "Enter \"2a\" to choose the first item under the [2]nd option.")
+		printlnWithPrefix(input = "Enter \"1\" to choose the [1]st option.")
+		printlnWithPrefix(input = "Enter \"2a\" to choose the first item under the [2]nd option.")
 	}
 
-
-	private fun parseInput(input: String, inputChars: CharArray): ReportOption? {
+	private fun parseInput(input: String, inputChars: CharArray): PrintOption? {
 		val firstInputVal = inputChars[0].toString()
 		var option = currentMenu.options[firstInputVal]
+		//let's the user select a submenu option in one input, ex. 'input: 1a'
 		if (input.length > 1) {
 			val secondInputVal = inputChars[1].toString()
 			option = option?.getSubMenuOptions()?.get(secondInputVal)
@@ -116,18 +144,21 @@ class Shell(val portfolio: Portfolio) {
 
 	internal fun printInvalidInput(input: String) {
 		println("$input is invalid. Try another input...\n")
-		currentMenu.print()
+		currentMenu.printMenu()
 	}
 
-	private fun ReportOption.printPrimary() {
+	private fun PrintOption.printPrimary() {
 		executePrimary()
-		currentMenu.print()
+		currentMenu.printMenu()
 	}
 
+	/**
+	 * Prints options that are always available to the user.
+	 */
 	private fun printExtraOptionsMsg() {
-		val mainKey = MAIN_MENU_INPUT.short.addBulletStyling()
-		val helpKey = HELP_INPUT.short.addBulletStyling()
-		val quitKey = QUIT_INPUT.short.addBulletStyling()
+		val mainKey = MAIN_MENU_INPUT.key.addBulletStyling()
+		val helpKey = HELP_INPUT.key.addBulletStyling()
+		val quitKey = QUIT_INPUT.key.addBulletStyling()
 		val str = "Or enter ${mainKey}ain menu, ${helpKey}elp, or " +
 			 "${quitKey}uit the application"
 
@@ -136,14 +167,17 @@ class Shell(val portfolio: Portfolio) {
 
 	internal fun setAndPrintCurrentMenu(menu: Menu) {
 		currentMenu = menu
-		currentMenu.print()
+		currentMenu.printMenu()
 	}
 
 	private fun Scanner.askForUserInput(): String {
-		print(">> ")
+		print(USER_INPUT_SYMBOL)
 		return this.next()
 	}
 
+	/**
+	 * Prints intro when user launches the application.
+	 */
 	private fun introToConsole() {
 		println("+=====================================================+")
 		println("--- Welcome to $APP_NAME ---")
@@ -153,19 +187,17 @@ class Shell(val portfolio: Portfolio) {
 
 
 	internal fun printMainMenuScreen(printExtraOpts: Boolean = true) {
-		mainMenu.print()
+		mainMenu.printMenu()
 		currentMenu = mainMenu
 
 		if (printExtraOpts) printExtraOptionsMsg()
 	}
 }
 
-internal fun String.normalizeInput(): String {
-	return this.toLowerCase().trim()
+
+//main funciton for testing the shell
+fun main(args: Array<String>) {
+	val portfolio = Portfolio(createSampleBonds())
+	val shell = Shell(portfolio)
+	shell.init()
 }
-
-class KeyInput(
-	 val long: String,
-	 val short: String
-)
-
