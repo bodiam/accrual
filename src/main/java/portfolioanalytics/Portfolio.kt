@@ -14,8 +14,10 @@ import java.util.*
  * @property total totals for bond values
  * @property bondDetails bond listings by property
  * @property allocation portfolio allocations by property
- * @property maturity the average bond maturity
- * @property yieldAtCost the average yield at cost
+ * @property maturity the weighted average bond maturity
+ * @property yieldAtCost the weighted average yield at cost
+ *
+ * @author Vincent Xiao
  */
 class Portfolio(val tradedBonds: TradedBonds) {
 	val evaluationDate: LocalDate = tradedBonds.first().evaluationDate
@@ -26,9 +28,9 @@ class Portfolio(val tradedBonds: TradedBonds) {
 
 	val total = Total()
 	val bondDetails = BondDetails()
-	val allocation = Allocation()
+	val allocation = Distribution()
 
-	//averages
+	//weighted averages
 	val maturity: Double = tradedBonds.sumByDouble { it.marketValue * it.daysToMaturity } / (total.marketValue * 365)
 	val yieldAtCost: Double = tradedBonds.sumByDouble { it.yieldAtCost * it.originalCost } / total.originalCost
 
@@ -60,14 +62,14 @@ class Portfolio(val tradedBonds: TradedBonds) {
 	}
 
 	/**
-	 * Percentage allocations by bond property
+	 * Percentage distributions by bond property
 	 */
-	inner class Allocation {
-		val percentagesBySecurityType: Map<SecurityType, Double> = mapAllocationByProperty { it.securityType }
-		val percentagesByMaturityRange: Map<MaturityRange, Double> = mapAllocationByProperty { it.maturityRange }
-		val percentagesBySpRating: Map<SpRating?, Double> = mapAllocationByProperty { it.spRating }
+	inner class Distribution {
+		val percentagesBySecurityType: Map<SecurityType, Double> = mapDistributionByProperty { it.securityType }
+		val percentagesByMaturityRange: Map<MaturityRange, Double> = mapDistributionByProperty { it.maturityRange }
+		val percentagesBySpRating: Map<SpRating?, Double> = mapDistributionByProperty { it.spRating }
 
-		private fun <T> mapAllocationByProperty(
+		private fun <T> mapDistributionByProperty(
 			 getBondProperty: (bond: TradedBond) -> T
 		): Map<T, Double> {
 			val map = TreeMap<T, Double>()

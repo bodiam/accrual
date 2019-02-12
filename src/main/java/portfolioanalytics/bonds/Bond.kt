@@ -4,7 +4,7 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit.DAYS
 
 /**
- * A tradedBond represents a bond that has been purchased by an investor.
+ * A tradedBond represents a bond that's been purchased by an investor.
  * @author Vincent Xiao
  */
 class TradedBond(

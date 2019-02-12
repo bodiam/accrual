@@ -15,6 +15,7 @@ import kotlin.collections.LinkedHashMap
  */
 class Shell(private val portfolio: Portfolio) {
 	internal val mainMenu: Menu = createMainMenu()
+
 	internal var currentMenu: Menu = mainMenu
 
 	/**
@@ -37,12 +38,11 @@ class Shell(private val portfolio: Portfolio) {
 		val QUIT_INPUT = KeyInput("quit", "q")
 		val HELP_INPUT = KeyInput("help", "h")
 
-
 		const val USER_INPUT_SYMBOL = ">> "
 
 		//margin sizes
 		const val MARGIN_MENU_OPTION = "   "
-		const val MARGIN_MENU_SUBOPTION = "     "
+		const val MARGIN_MENU_SUB_OPTION = "     "
 	}
 
 	/**
@@ -112,7 +112,7 @@ class Shell(private val portfolio: Portfolio) {
 	 * Exits the application!
 	 */
 	fun shutdown() {
-		println("Shutting down...Bye!")
+		println("Shutting down...")
 		System.exit(0)
 	}
 
@@ -124,8 +124,8 @@ class Shell(private val portfolio: Portfolio) {
 		println("Choose an option by entering the value corresponding to the option")
 		println("Example:")
 		printMainMenuScreen(false)
-		printlnWithPrefix(input = "Enter \"1\" to choose the [1]st option.")
-		printlnWithPrefix(input = "Enter \"2a\" to choose the first item under the [2]nd option.")
+		printlnWithPrefix(input = "Enter \"1\" to choose the 1st option.")
+		printlnWithPrefix(input = "Enter \"2a\" to choose the first item under the 2nd option.")
 	}
 
 	private fun parseInput(input: String, inputChars: CharArray): PrintOption? {
@@ -143,7 +143,7 @@ class Shell(private val portfolio: Portfolio) {
 	}
 
 	internal fun printInvalidInput(input: String) {
-		println("$input is invalid. Try another input...\n")
+		println("Input: '$input' is invalid.\n")
 		currentMenu.printMenu()
 	}
 

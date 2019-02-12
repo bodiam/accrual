@@ -24,7 +24,7 @@ class Menu(
 		printlnWithPrefix(prefix, "-".repeat(name.length))
 		this.options.forEach { key, option ->
 			printOption(prefix, key, option.name)
-			if (shouldWithPrintSubMenu) option.printSubOptions(Shell.MARGIN_MENU_SUBOPTION)
+			if (shouldWithPrintSubMenu) option.printSubOptions(Shell.MARGIN_MENU_SUB_OPTION)
 		}
 		println()
 	}
