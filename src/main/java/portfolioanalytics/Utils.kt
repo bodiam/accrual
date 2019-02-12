@@ -13,18 +13,18 @@ internal fun Double.withCommas(): String {
 /**
  * Formats a double to percentage string
  */
-internal fun Double.toPercent(): String {
-	return String.format("%." + 2 + "f", this * 100) + "%"
+internal fun Double.toPercent(decimalPlaces: Int): String {
+	return String.format("%." + decimalPlaces + "f", this * 100) + "%"
 }
 
 /**
- * Rounds a double to N decimal places
+ * Rounds a double to N decimal decimalPlaces
  */
-internal fun round(value: Double, places: Int): Double {
-	if (places < 0) throw IllegalArgumentException()
+internal fun round(value: Double, decimalPlaces: Int): Double {
+	if (decimalPlaces < 0) throw IllegalArgumentException()
 
 	var bd = BigDecimal(java.lang.Double.toString(value))
-	bd = bd.setScale(places, RoundingMode.HALF_UP)
+	bd = bd.setScale(decimalPlaces, RoundingMode.HALF_UP)
 	return bd.toDouble()
 }
 

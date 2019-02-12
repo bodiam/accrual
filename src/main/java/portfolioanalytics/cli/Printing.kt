@@ -15,7 +15,7 @@ fun printStats(portfolio: Portfolio) {
 	textTable.addKeyValue("Amortized Cost", portfolio.total.amortizerdCost.withCommas())
 	textTable.addKeyValue("Original Cost", portfolio.total.originalCost.withCommas())
 	textTable.addKeyValue("Accrued Interest", portfolio.total.accruedInterest.withCommas())
-	textTable.addKeyValue("Yield At Cost", portfolio.yieldAtCost.toPercent())
+	textTable.addKeyValue("Yield At Cost", portfolio.yieldAtCost.toPercent(2))
 	textTable.addKeyValue("Average Maturity", "${portfolio.maturity.withCommas()} Years")
 
 	textTable.setMediumColumnWidth()
@@ -48,7 +48,7 @@ fun <T> Map<T, Double>.printDistribution(title: String) {
 	textTable.addTitle(title, 2)
 	this.forEach { (key, value) ->
 		run {
-			textTable.addKeyValue("$key", value.toPercent())
+			textTable.addKeyValue("$key", value.toPercent(1))
 				 .setTextAlignment(TextAlignment.LEFT)
 		}
 	}

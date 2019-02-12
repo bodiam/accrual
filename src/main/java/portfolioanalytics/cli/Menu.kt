@@ -42,7 +42,10 @@ internal fun createDistributionOptions(portfolio: Portfolio): Array<PrintOption>
 		 ),
 		 PrintOption(
 				name = "Credit (S&P Ratings)",
-				primaryAction = { portfolio.allocation.percentagesBySpRating.printDistribution("Credit Distribution <br/> Ratings by S&P") }
+				primaryAction = {
+					portfolio.allocation.percentagesBySpRating.printDistribution("Credit Distribution " +
+						 "<br/> Ratings by Standard & Poor's")
+				}
 		 )
 	)
 }

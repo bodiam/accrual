@@ -85,9 +85,9 @@ internal class TextTable {
 			table.addRow(
 				 b.cusip,
 				 b.par.withCommas(),
-				 b.coupon.toPercent(),
+				 b.coupon.toPercent(2),
 				 b.maturityDate,
-				 b.yieldAtCost.toPercent(),
+				 b.yieldAtCost.toPercent(2),
 				 b.originalCost.withCommas(),
 				 b.amortizedCost.withCommas(),
 				 b.marketValue.withCommas(),

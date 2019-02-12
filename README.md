@@ -5,9 +5,9 @@ Features:
 - calculates portfolio statistics (totals, weighted-average yield and maturity)
 - bond distributions by security type, maturity, and credit ratings
 - detailed bond listings by security type, maturity, and credit ratings 
-- parses CSV files containg bond data 
-- shell CLI prints ASCII tables
-
+- parses CSV files containing bond data 
+- shell CLI with ASCII table output
+ 
 ## Setup Locally
 ### Requirements
 - Java 8 or later
@@ -63,27 +63,27 @@ Choose from the following menu to view portfolio analytics and bond data:
 >> 2c
 ┌─────────────────────────────────┐
 │       Credit Distribution       │
-│         Ratings by S&P          │
+│    Ratings by Standard & Poors  │
 ├────────────────┬────────────────┤
-│ AAA            │ 6.89%          │
+│ AAA            │ 6.9%           │
 ├────────────────┼────────────────┤
-│ AA+            │ 59.25%         │
+│ AA+            │ 59.3%          │
 ├────────────────┼────────────────┤
-│ AA             │ 0.24%          │
+│ AA             │ 0.2%           │
 ├────────────────┼────────────────┤
-│ AA-            │ 5.69%          │
+│ AA-            │ 5.7%           │
 ├────────────────┼────────────────┤
-│ A+             │ 13.32%         │
+│ A+             │ 13.3%          │
 ├────────────────┼────────────────┤
-│ A              │ 5.77%          │
+│ A              │ 5.8%           │
 ├────────────────┼────────────────┤
-│ A-             │ 3.87%          │
+│ A-             │ 3.9%           │
 ├────────────────┼────────────────┤
-│ BBB+           │ 1.48%          │
+│ BBB+           │ 1.5%           │
 ├────────────────┼────────────────┤
-│ A-1+           │ 1.97%          │
+│ A-1+           │ 2.0%           │
 ├────────────────┼────────────────┤
-│ NR             │ 1.50%          │
+│ NR             │ 1.5%           │
 └────────────────┴────────────────┘
 ```
 
