@@ -19,8 +19,8 @@ Features:
  cd accrual 
 ```
 ### Running the Application
-Use your IDE's run tool on [App.kt](./src/main/java/portfolioanalytics/App.kt)
-or use Kotlin's [command-line compiler](https://kotlinlang.org/docs/tutorials/command-line.html) 
+Use your IDE's build/run tool or use Kotlin's [command-line compiler](https://kotlinlang.org/docs/tutorials/command-line.html) to run [App.kt](./src/main/java/portfolioanalytics/App.kt)
+
 ## Usage
 Running the app presents an interative console:
 ```shell
@@ -39,7 +39,6 @@ Choose from the following menu to view portfolio analytics and bond data:
     [c] Credit
 
 >> 1
-
 ┌─────────────────────────────────┐
 │      Portfolio Statistics       │
 │          As of 12/31/18         │
@@ -59,6 +58,32 @@ Choose from the following menu to view portfolio analytics and bond data:
 ├────────────────┼────────────────┤
 │ Average        │ 2.81 Years     │
 │ Maturity       │                │
+└────────────────┴────────────────┘
+
+>> 2c
+┌─────────────────────────────────┐
+│       Credit Distribution       │
+│         Ratings by S&P          │
+├────────────────┬────────────────┤
+│ AAA            │ 6.89%          │
+├────────────────┼────────────────┤
+│ AA+            │ 59.25%         │
+├────────────────┼────────────────┤
+│ AA             │ 0.24%          │
+├────────────────┼────────────────┤
+│ AA-            │ 5.69%          │
+├────────────────┼────────────────┤
+│ A+             │ 13.32%         │
+├────────────────┼────────────────┤
+│ A              │ 5.77%          │
+├────────────────┼────────────────┤
+│ A-             │ 3.87%          │
+├────────────────┼────────────────┤
+│ BBB+           │ 1.48%          │
+├────────────────┼────────────────┤
+│ A-1+           │ 1.97%          │
+├────────────────┼────────────────┤
+│ NR             │ 1.50%          │
 └────────────────┴────────────────┘
 ```
 
