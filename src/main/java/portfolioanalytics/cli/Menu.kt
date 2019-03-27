@@ -74,10 +74,7 @@ class PrintOption(
 	}
 
 	fun getSubMenuOptions(): Map<String, PrintOption>? {
-		if (subMenu != null) {
-			return subMenu.options
-		}
-		return null
+		return subMenu?.options
 	}
 
 	fun printSubOptions(prefix: String) {
@@ -97,10 +94,7 @@ class PrintOption(
 			for (opt in opts) {
 				options[index++.toString()] = opt
 			}
-			return Menu(
-				 menuName,
-				 options
-			)
+			return Menu(name = menuName, options = options)
 		}
 	}
 }

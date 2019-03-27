@@ -16,7 +16,7 @@ interface Rating {
 
 /**
  * A term is the time horizon in which a bond will mature. Generally, tradedBonds maturing in one year or less are
- * considered key-term
+ * considered short-term
  */
 enum class Term {
 	ShortTerm,
@@ -77,7 +77,7 @@ enum class SpRating(
 	BBB_Plus("BBB+", Grade.Good, Term.LongTerm),
 	BBB("BBB", Grade.Good, Term.LongTerm),
 	BBB_Minus("BBB-", Grade.Good, Term.LongTerm),
-	//key term ratings
+	//short term ratings
 	A_1_Plus("A-1+", Grade.Prime, Term.ShortTerm),
 	A_1("A-1", Grade.VeryHigh, Term.ShortTerm),
 	A_2("A-2", Grade.High, Term.ShortTerm),
@@ -120,7 +120,7 @@ enum class MoodysRating(
 	Baa1("Baa1", Grade.Good, Term.LongTerm),
 	Baa2("Baa2", Grade.Good, Term.LongTerm),
 	Baa3("Baa3", Grade.Good, Term.LongTerm),
-	//key term ratings
+	//short term ratings
 	P_1("P-1", Grade.Prime, Term.ShortTerm),
 	P_2("A-1", Grade.High, Term.ShortTerm),
 	P_3("A-2", Grade.Good, Term.ShortTerm),
