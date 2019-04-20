@@ -3,3 +3,8 @@ out/
 *.iml
 *.txt
 *.numbers
+.DS_Store
+
+target/
+
+
